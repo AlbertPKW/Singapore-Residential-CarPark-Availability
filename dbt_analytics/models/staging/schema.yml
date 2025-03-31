@@ -1,0 +1,130 @@
+version: 2
+
+sources:
+  - name: staging
+    database: sg-resi-carpark
+    schema: sg_carpark_dataset
+    tables:
+      - name: carpark_availability_data
+      - name: hdb_carpark_information
+  
+  - name: subzones
+    database: sg-resi-carpark
+    schema: sg_subzones
+    tables:
+      - name: subzones
+
+models:
+  - name: stg_carpark_info
+    description: ""
+    columns:
+      - name: car_park_no
+        data_type: string
+        description: ""
+        tests:
+          - unique:
+              severity: warn
+          - not_null:
+              severity: warn
+
+      - name: address
+        data_type: string
+        description: ""
+
+      - name: latitude
+        data_type: float64
+        description: ""
+
+      - name: longitude
+        data_type: float64
+        description: ""
+
+      - name: geometry
+        data_type: geography
+        description: ""
+
+      - name: car_park_type
+        data_type: string
+        description: ""
+
+      - name: type_of_parking_system
+        data_type: string
+        description: ""
+
+      - name: short_term_parking
+        data_type: string
+        description: ""
+
+      - name: free_parking
+        data_type: string
+        description: ""
+
+      - name: night_parking
+        data_type: string
+        description: ""
+
+      - name: car_park_decks
+        data_type: int64
+        description: ""
+
+      - name: gantry_height
+        data_type: float64
+        description: ""
+
+      - name: car_park_basement
+        data_type: string
+        description: ""
+
+  - name: stg_sg_subzones
+    description: ""
+    columns:
+      - name: id
+        data_type: string
+        description: ""
+
+      - name: region_n
+        data_type: string
+        description: ""
+
+      - name: subzone_n
+        data_type: string
+        description: ""
+
+      - name: pln_area_n
+        data_type: string
+        description: ""
+
+      - name: geometry
+        data_type: geography
+        description: ""
+
+  - name: stg_carpark_availability
+    description: ""
+    columns:
+      - name: availability_key
+        data_type: string
+        description: ""
+
+      - name: carpark_number
+        data_type: string
+        description: ""
+
+      - name: lot_code
+        data_type: string
+        description: ""
+
+      - name: lot_type
+        data_type: string
+        description: ""
+
+      - name: total_lots
+        data_type: int64
+        description: ""
+
+      - name: available_lots
+        data_type: int64
+        description: ""
+
+      - name: carpark_datetime
+        data_type: timestamp
+        description: ""
