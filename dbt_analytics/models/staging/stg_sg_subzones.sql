@@ -10,4 +10,4 @@ select
     SUBZONE_N,
     PLN_AREA_N,
     geometry
-from {{ source('subzones','subzones') }}
+from {{ source('staging','subzones') }}
