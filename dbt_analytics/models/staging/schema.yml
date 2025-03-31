@@ -7,11 +7,6 @@ sources:
     tables:
       - name: carpark_availability_data
       - name: hdb_carpark_information
-  
-  - name: subzones
-    database: sg-resi-carpark
-    schema: sg_subzones
-    tables:
       - name: subzones
 
 models:
