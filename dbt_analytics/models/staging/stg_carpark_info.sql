@@ -8,7 +8,7 @@ with carpark_info as
 (
     select *,
         row_number() over(partition by car_park_no) as rn
-    from {{ source('staging','hdb_carpark_information') }}
+    from {{ source('staging','hdb_carpark_info') }}
     where car_park_no is not null
 )
 

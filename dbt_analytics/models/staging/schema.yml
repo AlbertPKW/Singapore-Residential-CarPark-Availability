@@ -6,7 +6,7 @@ sources:
     schema: sg_carpark_dataset
     tables:
       - name: carpark_availability_data
-      - name: hdb_carpark_information
+      - name: hdb_carpark_info
       - name: subzones
 
 models:
