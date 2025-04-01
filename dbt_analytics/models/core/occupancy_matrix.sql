@@ -2,7 +2,7 @@
 
 with occupancy_tbl as (
     select 
-        date,
+        date as `Date`,
         hour as `Hour`,
         occupancy_rate
     from {{ ref('fact_carpark') }}
@@ -24,6 +24,7 @@ dow as (
 )
 
 select
+    o.`Date`
     d.day_of_week as day_num,
     d.`Day_Name`,
     o.`Hour`,
@@ -31,6 +32,6 @@ select
 from occupancy_tbl o
 inner join dow d
 on o.date = d.date_day
-group by 1,2,3
+group by 1,2,3,4
 
 

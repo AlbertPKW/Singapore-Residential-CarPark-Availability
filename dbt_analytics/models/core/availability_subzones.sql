@@ -14,23 +14,17 @@ subzones as (
         geometry
     from {{ ref('dim_subzones') }}
 ),
-lots_by_day as (
-    select
-        subzone_id,
-        date as Date,
-        avg(available_lots) as Day_Available_Lots
-    from lots_availability
-    group by 1,2
-),
 average_lots as (
     select
         subzone_id,
-        avg(Day_Available_Lots) as Daily_Average_Available_Lots
-    from lots_by_day
-    group by 1
+        date as Date,
+        avg(available_lots) as Daily_Average_Available_Lots
+    from lots_availability
+    group by 1,2
 )
 
 select 
+    a.Date,
     s.SUBZONE_N as Subzone,
     a.Daily_Average_Available_Lots,
     s.geometry
