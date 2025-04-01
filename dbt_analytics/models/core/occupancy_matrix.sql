@@ -24,7 +24,7 @@ dow as (
 )
 
 select
-    o.`Date`
+    o.`Date`,
     d.day_of_week as day_num,
     d.`Day_Name`,
     o.`Hour`,
