@@ -1,0 +1,343 @@
+version: 2
+
+models:
+  - name: dates
+    description: ""
+    columns:
+      - name: date_day
+        data_type: date
+        description: ""
+
+      - name: prior_date_day
+        data_type: date
+        description: ""
+
+      - name: next_date_day
+        data_type: date
+        description: ""
+
+      - name: prior_year_date_day
+        data_type: date
+        description: ""
+
+      - name: prior_year_over_year_date_day
+        data_type: date
+        description: ""
+
+      - name: day_of_week
+        data_type: int64
+        description: ""
+
+      - name: day_of_week_iso
+        data_type: int64
+        description: ""
+
+      - name: day_of_week_name
+        data_type: string
+        description: ""
+
+      - name: day_of_week_name_short
+        data_type: string
+        description: ""
+
+      - name: day_of_month
+        data_type: int64
+        description: ""
+
+      - name: day_of_year
+        data_type: int64
+        description: ""
+
+      - name: week_start_date
+        data_type: date
+        description: ""
+
+      - name: week_end_date
+        data_type: date
+        description: ""
+
+      - name: prior_year_week_start_date
+        data_type: date
+        description: ""
+
+      - name: prior_year_week_end_date
+        data_type: date
+        description: ""
+
+      - name: week_of_year
+        data_type: int64
+        description: ""
+
+      - name: iso_week_start_date
+        data_type: date
+        description: ""
+
+      - name: iso_week_end_date
+        data_type: date
+        description: ""
+
+      - name: prior_year_iso_week_start_date
+        data_type: date
+        description: ""
+
+      - name: prior_year_iso_week_end_date
+        data_type: date
+        description: ""
+
+      - name: iso_week_of_year
+        data_type: int64
+        description: ""
+
+      - name: prior_year_week_of_year
+        data_type: int64
+        description: ""
+
+      - name: prior_year_iso_week_of_year
+        data_type: int64
+        description: ""
+
+      - name: month_of_year
+        data_type: int64
+        description: ""
+
+      - name: month_name
+        data_type: string
+        description: ""
+
+      - name: month_name_short
+        data_type: string
+        description: ""
+
+      - name: month_start_date
+        data_type: date
+        description: ""
+
+      - name: month_end_date
+        data_type: date
+        description: ""
+
+      - name: prior_year_month_start_date
+        data_type: date
+        description: ""
+
+      - name: prior_year_month_end_date
+        data_type: date
+        description: ""
+
+      - name: quarter_of_year
+        data_type: int64
+        description: ""
+
+      - name: quarter_start_date
+        data_type: date
+        description: ""
+
+      - name: quarter_end_date
+        data_type: date
+        description: ""
+
+      - name: year_number
+        data_type: int64
+        description: ""
+
+      - name: year_start_date
+        data_type: date
+        description: ""
+
+      - name: year_end_date
+        data_type: date
+        description: ""
+
+  - name: dim_dates
+    description: ""
+    columns:
+      - name: date_day
+        data_type: date
+        description: ""
+
+      - name: day_of_week
+        data_type: int64
+        description: ""
+
+      - name: day_of_month
+        data_type: int64
+        description: ""
+
+      - name: day_of_year
+        data_type: int64
+        description: ""
+
+      - name: week_of_year
+        data_type: int64
+        description: ""
+
+      - name: month_of_year
+        data_type: int64
+        description: ""
+
+      - name: month_name
+        data_type: string
+        description: ""
+
+      - name: quarter_of_year
+        data_type: int64
+        description: ""
+
+      - name: year_number
+        data_type: int64
+        description: ""
+
+  - name: dim_time
+    description: ""
+    columns:
+      - name: time_key
+        data_type: int64
+        description: ""
+
+      - name: hour_24
+        data_type: int64
+        description: ""
+
+      - name: time_of_day
+        data_type: string
+        description: ""
+
+  - name: dim_carpark_info
+    description: ""
+    columns:
+      - name: carpark_key
+        data_type: string
+        description: ""
+
+      - name: car_park_no
+        data_type: string
+        description: ""
+
+      - name: address
+        data_type: string
+        description: ""
+
+      - name: latitude
+        data_type: float64
+        description: ""
+
+      - name: longitude
+        data_type: float64
+        description: ""
+
+      - name: geometry
+        data_type: geography
+        description: ""
+
+      - name: car_park_type
+        data_type: string
+        description: ""
+
+      - name: parking_system_type
+        data_type: string
+        description: ""
+
+      - name: short_term_parking
+        data_type: string
+        description: ""
+
+      - name: free_parking
+        data_type: string
+        description: ""
+
+      - name: night_parking
+        data_type: string
+        description: ""
+
+      - name: num_decks
+        data_type: int64
+        description: ""
+
+      - name: gantry_height
+        data_type: float64
+        description: ""
+
+      - name: has_basement
+        data_type: boolean
+        description: ""
+
+  - name: dim_subzones
+    description: ""
+    columns:
+      - name: subzone_id
+        data_type: string
+        description: ""
+
+      - name: region_n
+        data_type: string
+        description: ""
+
+      - name: subzone_n
+        data_type: string
+        description: ""
+
+      - name: pln_area_n
+        data_type: string
+        description: ""
+
+      - name: geometry
+        data_type: geography
+        description: ""
+
+  - name: fact_carpark
+    description: ""
+    columns:
+      - name: availability_key
+        data_type: string
+        description: ""
+
+      - name: carpark_number
+        data_type: string
+        description: ""
+
+      - name: carpark_key
+        data_type: string
+        description: ""
+
+      - name: lot_type
+        data_type: string
+        description: ""
+
+      - name: date_key
+        data_type: int64
+        description: ""
+
+      - name: time_key
+        data_type: int64
+        description: ""
+
+      - name: subzone_id
+        data_type: string
+        description: ""
+
+      - name: total_lots
+        data_type: int64
+        description: ""
+
+      - name: available_lots
+        data_type: int64
+        description: ""
+
+      - name: occupied_lots
+        data_type: int64
+        description: ""
+
+      - name: occupancy_rate
+        data_type: float64
+        description: ""
+
+  - name: dim_lot_type
+    description: ""
+    columns:
+      - name: lot_type_code
+        data_type: string
+        description: ""
+
+      - name: lot_type_description
+        data_type: string
+        description: ""
