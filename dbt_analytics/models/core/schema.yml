@@ -187,21 +187,6 @@ models:
         data_type: int64
         description: ""
 
-  - name: dim_time
-    description: ""
-    columns:
-      - name: time_key
-        data_type: int64
-        description: ""
-
-      - name: hour_24
-        data_type: int64
-        description: ""
-
-      - name: time_of_day
-        data_type: string
-        description: ""
-
   - name: dim_carpark_info
     description: ""
     columns:
