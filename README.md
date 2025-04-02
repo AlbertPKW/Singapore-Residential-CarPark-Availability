@@ -41,8 +41,13 @@ The following tools were incorporated to create the batch data pipeline:
 
 * **Data Ingestion**: [Carpark Availability API](https://data.gov.sg/datasets?resultId=d_ca933a644e55d34fe21f28b8052fac63&coverage=&page=1)
 * **Infrastructure as Code**: Terraform
+* **Containerization**: Docker and Postgres
 * **Workflow Orchestration**: Kestra
 * **Data Lake**: Google Cloud Storage
 * **Data Warehouse**: Google BigQuery
 * **Data Transformation**: dbt
 * **Reporting**: Google Data Studio
+
+## Architecture
+
+![Architecture](https://github.com/AlbertPKW/Singapore-Residential-CarPark-Availability/blob/main/images/DE%20Diagram.jpeg)
