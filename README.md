@@ -50,4 +50,4 @@ The following tools were incorporated to create the batch data pipeline:
 
 ## Architecture
 
-![Architecture](https://github.com/AlbertPKW/Singapore-Residential-CarPark-Availability/blob/main/images/DE%20Diagram.jpeg)
+![Architecture](https://github.com/AlbertPKW/Singapore-Residential-CarPark-Availability/blob/main/images/DE%20Diagram%20(2).jpeg)
