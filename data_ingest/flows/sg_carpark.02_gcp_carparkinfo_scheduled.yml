@@ -1,0 +1,144 @@
+id: 02_gcp_carparkinfo_scheduled
+namespace: sg_carpark
+
+variables:
+  file: "HDBCarparkInformation.csv"
+  gcs_file: "gs://{{kv('GCP_BUCKET_NAME')}}/{{vars.file}}"
+  table: "{{kv('GCP_DATASET')}}.HDBCarparkInformation"
+  data: "{{outputs.extract.outputFiles['HDBCarparkInformation.csv']}}"
+
+tasks:
+  - id: set_label
+    type: io.kestra.plugin.core.execution.Labels
+    labels:
+      file: "{{render(vars.file)}}"
+
+  - id: extract
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: ghcr.io/kestra-io/pydata:latest
+    beforeCommands:
+      - pip install requests
+      - pip install pyproj
+    env:
+      CREDENTIALS__PROJECT_ID: "{{kv('GCP_PROJECT_ID')}}"
+      CREDENTIALS__PRIVATE_KEY: "{{kv('GCP_PRIVATE_KEY')}}"
+    outputFiles:
+      - "HDBCarparkInformation.csv"
+    warningOnStdErr: false
+    script: |
+
+      import requests
+      import pandas as pd
+      from pyproj import Transformer
+
+      transformer = Transformer.from_crs("EPSG:3414", "EPSG:4326", always_xy=True)
+
+      DATASET_ID = "d_23f946fa557947f93a8043bbef41dd09"
+
+      def download_file(DATASET_ID):
+          s.get(
+          f"https://api-open.data.gov.sg/v1/public/api/datasets/{DATASET_ID}/initiate-download",
+          headers={"Content-Type":"application/json"},
+          json={}
+          )
+
+          poll_download_response = s.get(
+              f"https://api-open.data.gov.sg/v1/public/api/datasets/{DATASET_ID}/poll-download",
+              headers={"Content-Type":"application/json"},
+              json={}
+          )
+          if "url" in poll_download_response.json()['data']:
+              DOWNLOAD_URL = poll_download_response.json()['data']['url']
+              df = pd.read_csv(DOWNLOAD_URL)
+              return df
+
+      s = requests.Session()
+      s.headers.update({'referer': 'https://colab.research.google.com'})
+      df = download_file(DATASET_ID)
+
+      df['longitude'], df['latitude'] = transformer.transform(df['x_coord'].values, df['y_coord'].values)
+      df = df[[
+          'car_park_no','address','x_coord','y_coord','longitude','latitude','car_park_type','type_of_parking_system',
+          'short_term_parking','free_parking','night_parking','car_park_decks', 'gantry_height', 'car_park_basement']]
+      df.to_csv("HDBCarparkInformation.csv", index=False)
+
+  - id: upload_to_gcs
+    type: io.kestra.plugin.gcp.gcs.Upload
+    from: "{{render(vars.data)}}"
+    to: "{{render(vars.gcs_file)}}"
+
+  - id: load_table
+    type: io.kestra.plugin.gcp.bigquery.LoadFromGcs
+    from:
+      - "{{render(vars.gcs_file)}}"
+    destinationTable: "{{kv('GCP_PROJECT_ID')}}.{{kv('GCP_DATASET')}}.hdb_carpark_info"
+    ignoreUnknownValues: true
+    format: CSV
+    csvOptions:
+      fieldDelimiter: ","
+      encoding: UTF-8
+      allowJaggedRows: true
+      skipLeadingRows: 1
+    createDisposition: CREATE_IF_NEEDED   
+    writeDisposition: WRITE_TRUNCATE
+    schema:
+      fields:
+        - name: car_park_no
+          type: STRING
+          description: Carpark Alpha-numeric Code
+        - name: address
+          type: STRING
+          description: Carpark Address
+        - name: x_coord
+          type: FLOAT64
+          description: X-Coordinate in SVY21
+        - name: y_coord
+          type: FLOAT64
+        - name: longitude
+          type: FLOAT64
+          description: Carpark Longitude
+        - name: latitude
+          type: FLOAT64
+          description: Carpark Latitude
+        - name: car_park_type
+          type: STRING
+          description: Carpark Type
+        - name: type_of_parking_system
+          type: STRING
+          description: Carpark Parking System Type
+        - name: short_term_parking
+          type: STRING
+          description: Whether short term parking is available
+        - name: free_parking
+          type: STRING
+          description: Whether free parking is available
+        - name: night_parking
+          type: STRING
+          description: Night Parking
+        - name: car_park_decks
+          type: INT64
+          description: Number of car park decks
+        - name: gantry_height
+          type: FLOAT64
+          description: Gantry Height in meters
+        - name: car_park_basement
+          type: STRING
+          description: Car Park Basement
+
+  - id: purge_files
+    type: io.kestra.plugin.core.storage.PurgeCurrentExecutionFiles
+    description: If you'd like to explore Kestra outputs, disable it.
+    disabled: false
+
+pluginDefaults:
+  - type: io.kestra.plugin.gcp
+    values:
+      serviceAccount: "{{kv('GCP_CREDS')}}"
+      projectId: "{{kv('GCP_PROJECT_ID')}}"
+      location: "{{kv('GCP_LOCATION')}}"
+      bucket: "{{kv('GCP_BUCKET_NAME')}}"
+
+triggers:
+  - id: carpark_info_schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "@monthly"
