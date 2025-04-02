@@ -2,6 +2,7 @@
 
 with occupancy_tbl as (
     select 
+        subzone_id,
         date as `Date`,
         hour as `Hour`,
         occupancy_rate
@@ -21,9 +22,16 @@ dow as (
             else 'Sun'
         end as `Day_Name`
     from {{ ref('dim_dates') }}
+),
+regions as (
+    select
+        subzone_id,
+        Region
+    from {{ ref('dim_subzones') }}
 )
 
 select
+    r.Region,
     o.`Date`,
     d.day_of_week as day_num,
     d.`Day_Name`,
@@ -32,6 +40,7 @@ select
 from occupancy_tbl o
 inner join dow d
 on o.date = d.date_day
-group by 1,2,3,4
-
+inner join regions r
+on o.subzone_id = r.subzone_id
+group by 1,2,3,4,5
 
