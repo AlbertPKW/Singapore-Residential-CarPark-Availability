@@ -1,0 +1,67 @@
+id: 03_gcp_subzones_scheduled
+namespace: sg_carpark
+
+variables:
+  file: "master_plan_boundaries.json"
+  features_file: "sg_boundaries.json"
+  gcs_file: "gs://{{kv('GCP_BUCKET_NAME')}}/{{vars.features_file}}"
+  dataset: "{{kv('GCP_DATASET')}}"
+  data: "{{ outputs.unzip.files | jq('.[] | select(. | endswith(\"master_plan_boundaries.json\")) | .') | first }}"
+  transformed_data: "{{outputs.process_json.outputFiles['sg_boundaries.json']}}"
+
+tasks:
+  - id: get_zipfile
+    type: io.kestra.plugin.core.http.Download
+    uri: https://gist.github.com/samuelyeewl/246258d00910390b0859f864645c00c8/archive/ab82ef3ac41da254ae1cbea4ecf77352d9ad3018.zip
+
+  - id: unzip
+    type: io.kestra.plugin.compress.ArchiveDecompress
+    algorithm: ZIP
+    from: "{{ outputs.get_zipfile.uri }}"
+
+  - id: process_json
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: ghcr.io/kestra-io/pydata:latest
+    env:
+      CREDENTIALS__PROJECT_ID: "{{kv('GCP_PROJECT_ID')}}"
+      CREDENTIALS__PRIVATE_KEY: "{{kv('GCP_PRIVATE_KEY')}}"
+    outputFiles:
+      - "*.json"
+    script: |
+    
+      import json
+
+      with open("{{render(vars.data)}}") as f:
+          data = json.load(f)
+      with open("{{vars.features_file}}", "w") as out:
+          for feature in data['features']:
+              out.write(json.dumps(feature) + '\n')
+    
+  - id: upload_to_gcs
+    type: io.kestra.plugin.gcp.gcs.Upload
+    from: "{{render(vars.transformed_data)}}"
+    to: "{{render(vars.gcs_file)}}"
+
+  - id: subzones_table
+    type: io.kestra.plugin.gcp.bigquery.Query
+    sql: |
+      CREATE OR REPLACE EXTERNAL TABLE `{{kv('GCP_PROJECT_ID')}}.{{render(vars.dataset)}}.subzones`
+      --sg_subzones.subzones 
+      OPTIONS (
+        format="JSON",
+        json_extension = 'GEOJSON',
+        uris = ["{{render(vars.gcs_file)}}"]
+      );
+
+pluginDefaults:
+  - type: io.kestra.plugin.gcp
+    values:
+      serviceAccount: "{{kv('GCP_CREDS')}}"
+      projectId: "{{kv('GCP_PROJECT_ID')}}"
+      location: "{{kv('GCP_LOCATION')}}"
+      bucket: "{{kv('GCP_BUCKET_NAME')}}"
+
+triggers:
+  - id: carpark_info_schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "@monthly"
