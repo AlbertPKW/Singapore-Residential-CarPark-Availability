@@ -34,3 +34,15 @@ The project provides the following key features:
 * [Carpark Availability API](https://data.gov.sg/datasets?resultId=d_ca933a644e55d34fe21f28b8052fac63&coverage=&page=1) from Data.gov.sg: Provides parking availability data of HDB Residential estates in Singapore which is updated every minute.
 * [HDB Information Dataset](https://data.gov.sg/datasets/d_23f946fa557947f93a8043bbef41dd09/view): Information about HDB carparks such as car park type, car park location (in SVY21), type of parking system, etc.
 * [Singapore Subzones GeoJSON file](https://gist.github.com/samuelyeewl/246258d00910390b0859f864645c00c8): GeoJSON file of Singapore subzones boundaries based on Singapore Master Plan 2019
+
+## Tools
+
+The following tools were incorporated to create the batch data pipeline:
+
+* **Data Ingestion**: [Carpark Availability API](https://data.gov.sg/datasets?resultId=d_ca933a644e55d34fe21f28b8052fac63&coverage=&page=1)
+* **Infrastructure as Code**: Terraform
+* **Workflow Orchestration**: Kestra
+* **Data Lake**: Google Cloud Storage
+* **Data Warehouse**: Google BigQuery
+* **Data Transformation**: dbt
+* **Reporting**: Google Data Studio
