@@ -10,7 +10,7 @@ with lot_capacity as (
 regions as (
     select
         subzone_id,
-        REPLACE(REGION_N, ' REGION', '') AS Region
+        Region
     from {{ ref('dim_subzones') }}
 )
 

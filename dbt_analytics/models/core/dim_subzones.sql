@@ -6,7 +6,7 @@
 
 SELECT 
     id as subzone_id,
-    REGION_N,
+    REPLACE(REGION_N, ' REGION', '') AS Region,
     SUBZONE_N,
     PLN_AREA_N,
     geometry
