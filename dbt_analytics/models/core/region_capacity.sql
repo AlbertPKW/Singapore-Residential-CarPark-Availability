@@ -22,4 +22,4 @@ select
 from lot_capacity l
 inner join regions r
 on l.subzone_id = r.subzone_id
-group by 1,2*
+group by 1,2
