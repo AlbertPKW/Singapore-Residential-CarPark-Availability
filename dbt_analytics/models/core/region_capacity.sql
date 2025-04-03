@@ -3,6 +3,7 @@
 with lot_capacity as (
     select 
         distinct subzone_id,
+        carpark_number,
         total_lots,
         lot_type
     from {{ ref('fact_carpark') }}
@@ -21,4 +22,4 @@ select
 from lot_capacity l
 inner join regions r
 on l.subzone_id = r.subzone_id
-group by 1,2
+group by 1,2*

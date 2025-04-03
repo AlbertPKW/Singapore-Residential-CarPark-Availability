@@ -43,4 +43,3 @@ on o.date = d.date_day
 inner join regions r
 on o.subzone_id = r.subzone_id
 group by 1,2,3,4,5
-
