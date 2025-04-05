@@ -1,4 +1,14 @@
-{{ config(materialized='table') }}
+{{
+    config(
+        materialized='table',
+        partition_by = {
+            "field": "Date",
+            "data_type": "date",
+            "granularity": "day"
+        },
+        cluster_by='Region'
+    )
+}}
 
 with lots_availability as (
     select 
