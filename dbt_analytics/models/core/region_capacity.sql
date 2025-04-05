@@ -1,4 +1,9 @@
-{{ config(materialized='table') }}
+{{
+    config(
+        materialized='table',
+        cluster_by='Region',
+    )
+}}
 
 with lot_capacity as (
     select 

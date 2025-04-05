@@ -1,3 +1,14 @@
+{{
+    config(
+        materialized='table',
+        partition_by = {
+            "field": "date",
+            "data_type": "date",
+            "granularity": "day"
+        }
+    )
+}}
+
 WITH availability_source AS (
     SELECT
         carpark_number,
