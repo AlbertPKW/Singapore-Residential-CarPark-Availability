@@ -1,3 +1,9 @@
+{{
+    config(
+        materialized='table'
+    )
+}}
+
 WITH lot_types AS (
     SELECT 'C' AS lot_type_code, 'Car' AS lot_type_description
     UNION ALL

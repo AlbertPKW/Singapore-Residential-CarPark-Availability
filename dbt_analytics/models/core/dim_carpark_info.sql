@@ -1,3 +1,9 @@
+{{
+    config(
+        materialized='table'
+    )
+}}
+
 SELECT
     car_park_no AS carpark_key,
     car_park_no,

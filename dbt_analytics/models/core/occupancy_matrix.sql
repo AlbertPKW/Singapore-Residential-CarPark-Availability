@@ -1,4 +1,14 @@
-{{ config(materialized='table') }}
+{{
+    config(
+        materialized='table',
+        partition_by = {
+            "field": "Date",
+            "data_type": "date",
+            "granularity": "day"
+        },
+        cluster_by='Region'
+    )
+}}
 
 with occupancy_tbl as (
     select 
@@ -43,4 +53,3 @@ on o.date = d.date_day
 inner join regions r
 on o.subzone_id = r.subzone_id
 group by 1,2,3,4,5
-

@@ -1,8 +1,14 @@
-{{ config(materialized='table') }}
+{{
+    config(
+        materialized='table',
+        cluster_by='Region',
+    )
+}}
 
 with lot_capacity as (
     select 
         distinct subzone_id,
+        carpark_number,
         total_lots,
         lot_type
     from {{ ref('fact_carpark') }}
