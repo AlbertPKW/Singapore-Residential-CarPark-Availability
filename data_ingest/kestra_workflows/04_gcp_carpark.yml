@@ -1,0 +1,189 @@
+id: 04_gcp_carpark
+namespace: sg_carpark
+
+inputs:
+  - id: year
+    type: SELECT
+    displayName: Select year
+    values: ["2024", "2025"]
+    defaults: "2025"
+    allowCustomValue: true 
+
+  - id: month
+    type: SELECT
+    displayName: Select month
+    values: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
+    defaults: "01"
+
+  - id: day
+    type: SELECT
+    displayName: Select day
+    values: ["01", "05", "10", "15", "20", "25"]
+    defaults: "01"
+
+  - id: hour
+    type: SELECT
+    displayName: Select hour
+    values: ["00", "03", "06", "09", "12", "15", "18", "21"]
+    defaults: "09"
+
+variables:
+  date_time: "{{inputs.year}}-{{inputs.month}}-{{inputs.day}}T{{inputs.hour}}:05:00"
+  file: "{{inputs.year}}-{{inputs.month}}-{{inputs.day}}T{{inputs.hour}}.parquet"
+  gcs_file: "gs://{{kv('GCP_BUCKET_NAME')}}/{{vars.file}}"
+  table: "{{kv('GCP_DATASET')}}.{{inputs.year}}_{{inputs.month}}_{{inputs.day}}_{{inputs.hour}}"
+  del_table: "{{inputs.year}}_{{inputs.month}}_{{inputs.day}}_{{inputs.hour}}"
+  data: "{{outputs.extract.outputFiles['carpark.parquet']}}"
+
+tasks:
+  - id: set_label
+    type: io.kestra.plugin.core.execution.Labels
+    labels:
+      file: "{{render(vars.file)}}"
+
+  - id: extract
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: ghcr.io/kestra-io/pydata:latest
+    beforeCommands:
+      - pip install requests
+    env:
+      CREDENTIALS__PROJECT_ID: "{{kv('GCP_PROJECT_ID')}}"
+      CREDENTIALS__PRIVATE_KEY: "{{kv('GCP_PRIVATE_KEY')}}"
+    outputFiles:
+      - "carpark.parquet"
+    warningOnStdErr: false
+    script: |
+
+      import requests
+      import pandas as pd
+      import pyarrow as pa
+      import pyarrow.parquet as pq
+
+      url = "https://api.data.gov.sg/v1/transport/carpark-availability"
+      querystring = {"date_time":"{{render(vars.date_time)}}"}
+
+      response = requests.get(url,params=querystring).json()
+
+      df_list = []
+
+      timestamp = response['items'][0]['timestamp']
+      dataset = response['items'][0]['carpark_data']
+
+      for data in dataset:
+          carpark_num = data['carpark_number']
+          infoset = data['carpark_info']
+          for info in infoset:
+              lot_type = info['lot_type']
+              total_lots = int(info['total_lots'])
+              available_lots = int(info['lots_available'])
+
+              record = {
+                  'carpark_number': carpark_num,
+                  'lot_type': lot_type,
+                  'total_lots': total_lots,
+                  'available_lots': available_lots
+              }
+
+              df_list.append(record)
+
+      # Create DataFrame
+      df = pd.DataFrame(df_list)
+
+      # Clean and add timestamp
+      df['carpark_datetime'] = pd.to_datetime(timestamp).tz_localize(None)
+
+      # Save to Parquet with optimized settings
+      table = pa.Table.from_pandas(df)
+      pq.write_table(
+          table, 
+          "carpark.parquet", 
+          compression='snappy',  # Efficient compression
+          coerce_timestamps='ms',  # Standardize timestamp precision
+          allow_truncated_timestamps=True  # Handle edge cases
+      )
+
+  - id: upload_to_gcs
+    type: io.kestra.plugin.gcp.gcs.Upload
+    from: "{{render(vars.data)}}"
+    to: "{{render(vars.gcs_file)}}"
+
+  - id: cp_table
+    type: io.kestra.plugin.gcp.bigquery.Query
+    sql: |
+      CREATE TABLE IF NOT EXISTS `{{kv('GCP_PROJECT_ID')}}.{{kv('GCP_DATASET')}}.carpark_availability_data`
+      (
+          unique_row_id BYTES OPTIONS (description = 'A unique identifier for the carpark availability.'),
+          filename STRING OPTIONS (description = 'The source filename from which the carpark availability data was loaded.'),      
+          carpark_number STRING OPTIONS (description = 'Carpark Alpha-numeric Code'),
+          lot_type STRING OPTIONS (description = 'Carpark lot type. C=Cars, H=Heavy Vehicles, Y=Motorcycles'),
+          total_lots INTEGER OPTIONS (description = 'Total number of lots'),
+          available_lots INTEGER OPTIONS (description = 'Available number of lots'),
+          carpark_datetime TIMESTAMP OPTIONS (description = 'The date and time when the data was captured')
+      )
+      PARTITION BY DATE(carpark_datetime);
+
+  - id: cp_table_ext
+    type: io.kestra.plugin.gcp.bigquery.Query
+    sql: |
+      CREATE OR REPLACE EXTERNAL TABLE `{{kv('GCP_PROJECT_ID')}}.{{render(vars.table)}}_ext`
+      (
+          carpark_number STRING OPTIONS (description = 'Carpark Alpha-numeric Code'),
+          lot_type STRING OPTIONS (description = 'Carpark lot type. C=Cars, H=Heavy Vehicles, Y=Motorcycles'),
+          total_lots INTEGER OPTIONS (description = 'Total number of lots'),
+          available_lots INTEGER OPTIONS (description = 'Available number of lots'),
+          carpark_datetime TIMESTAMP OPTIONS (description = 'The date and time when the data was captured')
+      )
+      OPTIONS (
+          format = 'PARQUET',
+          uris = ['{{render(vars.gcs_file)}}']
+      );
+
+  - id: cp_table_tmp
+    type: io.kestra.plugin.gcp.bigquery.Query
+    sql: |
+      CREATE OR REPLACE TABLE `{{kv('GCP_PROJECT_ID')}}.{{render(vars.table)}}`
+      AS
+      SELECT
+        MD5(CONCAT(
+          COALESCE(CAST(carpark_number AS STRING), ""),
+          COALESCE(CAST(lot_type AS STRING), ""),
+          COALESCE(CAST(carpark_datetime AS STRING), "")
+        )) AS unique_row_id,
+        "{{render(vars.file)}}" AS filename,
+        *
+      FROM `{{kv('GCP_PROJECT_ID')}}.{{render(vars.table)}}_ext`;
+
+  - id: cp_table_merge
+    type: io.kestra.plugin.gcp.bigquery.Query
+    sql: |
+      MERGE INTO `{{kv('GCP_PROJECT_ID')}}.{{kv('GCP_DATASET')}}.carpark_availability_data` T
+      USING `{{kv('GCP_PROJECT_ID')}}.{{render(vars.table)}}` S
+      ON T.unique_row_id = S.unique_row_id
+      WHEN NOT MATCHED THEN
+        INSERT (unique_row_id, filename, carpark_number, lot_type, total_lots, available_lots, carpark_datetime)
+        VALUES (S.unique_row_id, S.filename, S.carpark_number, S.lot_type, S.total_lots, S. available_lots, S.carpark_datetime);
+
+  - id: purge_files
+    type: io.kestra.plugin.core.storage.PurgeCurrentExecutionFiles
+    description: If you'd like to explore Kestra outputs, disable it.
+    disabled: false
+
+  - id: delete_ext_table
+    type: io.kestra.plugin.gcp.bigquery.DeleteTable
+    projectId: "{{kv('GCP_PROJECT_ID')}}"
+    dataset: "{{kv('GCP_DATASET')}}"
+    table: "{{render(vars.del_table)}}_ext"
+
+  - id: delete_tmp_table
+    type: io.kestra.plugin.gcp.bigquery.DeleteTable
+    projectId: "{{kv('GCP_PROJECT_ID')}}"
+    dataset: "{{kv('GCP_DATASET')}}"
+    table: "{{render(vars.del_table)}}"
+  
+pluginDefaults:
+  - type: io.kestra.plugin.gcp
+    values:
+      serviceAccount: "{{kv('GCP_CREDS')}}"
+      projectId: "{{kv('GCP_PROJECT_ID')}}"
+      location: "{{kv('GCP_LOCATION')}}"
+      bucket: "{{kv('GCP_BUCKET_NAME')}}"
