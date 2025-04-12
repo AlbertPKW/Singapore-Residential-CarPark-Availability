@@ -137,9 +137,9 @@ Alternatively, you can trigger a backfill for the previous month as the workflow
 
 Execute this workflow manually to create the BigQuery table ```carpark_availability_data``` and test the dbt project. Once dbt project is setup and working, proceed to <ins>04_gcp_carpark_scheduled Workflow</ins> in Data Ingestion (Part 2).
 
-![carpark_parquet](https://github.com/AlbertPKW/Singapore-Residential-CarPark-Availability/blob/main/images/carpark_parquet.jpg)
+![carpark_parquet](https://github.com/AlbertPKW/Singapore-Residential-CarPark-Availability/blob/main/images/carpark_parquet_2.jpg)
 
-![carpark_BigQuery](https://github.com/AlbertPKW/Singapore-Residential-CarPark-Availability/blob/main/images/avail_BQ.jpg)
+![carpark_BigQuery](https://github.com/AlbertPKW/Singapore-Residential-CarPark-Availability/blob/main/images/avail_BQ_2.jpg)
 
 ### dbt setup
 
