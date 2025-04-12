@@ -84,8 +84,8 @@ Perform the following in the terminal to provision the cloud infrastructure
 ```
 cd terraform
 terraform init
-terraform plan
-terraform apply
+terraform plan -var="project=sg-resi-carpark"
+terraform apply -var="project=sg-resi-carpark"
 
 cd ..
 
