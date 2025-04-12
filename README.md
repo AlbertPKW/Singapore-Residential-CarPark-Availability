@@ -109,8 +109,9 @@ Open the ```01_gcp_kv``` workflow by clicking on Edit Workflow. The purpose of t
 
 Excecute ```01_gcp_kv``` workflow, open the KV store after run is completed to check the values. 
 
-For security reasons (in case credentials are accidentally pushed to Github), please click on ```New Key-Value``` button to create the ```GCP_CREDS``` key manually by copying and pasting the entire content of ```google-credentials.json```. Change the Type to JSON.
-Create another key ```GCP_PRIVATE_KEY``` manually by pasting just the value of ```"private_key"``` from the ```google-credentials.json``` file. Type should be STRING.
+For security reasons (in case credentials are accidentally pushed to Github), please click on ```New Key-Value``` button to create the ```GCP_CREDS``` key manually by copying and pasting the entire content of ```google-credentials.json``` in value field. Namespace is sg_carpark and change the Type to JSON.
+
+Create another key ```GCP_PRIVATE_KEY``` manually by pasting just the value of ```"private_key"``` from the ```google-credentials.json``` file in value field. Namespace is sg_carpark and type should be STRING.
 
 The KV store should contain the following Key-Value pairs before proceeding with the subsequent workflows.
 
