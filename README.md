@@ -114,6 +114,8 @@ Create another key ```GCP_PRIVATE_KEY``` manually by pasting just the value of `
 
 The KV store should contain the following Key-Value pairs before proceeding with the subsequent workflows.
 
+![kv_store](https://github.com/AlbertPKW/Singapore-Residential-CarPark-Availability/blob/main/images/KV_Store.jpg)
+
 <ins>**02_gcp_carparkinfo_scheduled Workflow**</ins>
 
 For quick evaluation, execute this workflow manually and check that ```HDBCarparkInformation.csv``` is in GCS bucket and ```hdb_carpark_info``` table is in BigQuery.
