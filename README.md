@@ -145,7 +145,7 @@ Execute this workflow manually to create the BigQuery table ```carpark_availabil
 
 Sign up for a free account at [dbt homepage](https://www.getdbt.com/) and create a new project.
 
-Fork this repository and enter Repo by copying Git repo link from Github
+Fork this repository and enter Repo by copying Git repo link from Github.
 Choose BigQuery as the data warehouse.
 
 * Upload the service account key json file in the create from file option. This will fill out most fields related to the production credentials.
