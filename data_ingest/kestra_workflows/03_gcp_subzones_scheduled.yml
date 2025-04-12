@@ -24,7 +24,7 @@ tasks:
     containerImage: ghcr.io/kestra-io/pydata:latest
     env:
       CREDENTIALS__PROJECT_ID: "{{kv('GCP_PROJECT_ID')}}"
-      CREDENTIALS__PRIVATE_KEY: "{{kv('GCP_PRIVATE_KEY')}}"
+      CREDENTIALS__PRIVATE_KEY: "{{kv('GCP_CREDS')['private_key']}}"
     outputFiles:
       - "*.json"
     script: |
