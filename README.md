@@ -169,6 +169,8 @@ Check the lineage is the same as the image
 
 ![dbt_lineage](https://github.com/AlbertPKW/Singapore-Residential-CarPark-Availability/blob/main/images/dbt_lineage.jpg)
 
+In the dbt core model ```availability_subzones.sql```, the ```availability_subzones``` table is partitioned by ```Date``` field as it is a Time-unit column and this field is used as date range control in the dashboard to filter by date. The table is also clustered by ```Region``` field as this field is used as a filter in the dashboard.
+
 ### Data Ingestion (Part 2)
 
 <ins>**04_gcp_carpark_scheduled Workflow**</ins>
@@ -188,6 +190,8 @@ In the pop-up window, select the start date and end date for backfill. Optionall
 ![backfill_2](https://github.com/AlbertPKW/Singapore-Residential-CarPark-Availability/blob/main/images/backfill_2.jpg)
 
 The same GCS bucket will be populated with parquet files of carpark availability data and ```carpark_availability_data``` in BigQuery will updated with more data after each run is completed.
+
+In this workflow, the ```carpark_availability_data``` table is partitioned by ```Date``` field and clustered by ```carpark_number``` and ```lot_type``` fields as numerous queries in dbt perform aggregation against these columns. 
 
 In addition, the subflow ```05_gcp_dbt``` will generate numerous Staging/Dimension tables and Fact Table in BigQuery.
 
