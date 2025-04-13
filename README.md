@@ -137,15 +137,15 @@ Alternatively, you can trigger a backfill for the previous month as the workflow
 
 Execute this workflow manually to create the BigQuery table ```carpark_availability_data``` and test the dbt project. Once dbt project is setup and working, proceed to <ins>04_gcp_carpark_scheduled Workflow</ins> in Data Ingestion (Part 2).
 
-![carpark_parquet](https://github.com/AlbertPKW/Singapore-Residential-CarPark-Availability/blob/main/images/carpark_parquet.jpg)
+![carpark_parquet](https://github.com/AlbertPKW/Singapore-Residential-CarPark-Availability/blob/main/images/carpark_parquet_2.jpg)
 
-![carpark_BigQuery](https://github.com/AlbertPKW/Singapore-Residential-CarPark-Availability/blob/main/images/avail_BQ.jpg)
+![carpark_BigQuery](https://github.com/AlbertPKW/Singapore-Residential-CarPark-Availability/blob/main/images/avail_BQ_2.jpg)
 
 ### dbt setup
 
 Sign up for a free account at [dbt homepage](https://www.getdbt.com/) and create a new project.
 
-Fork this repository and enter Repo by copying Git repo link from Github
+Fork this repository and enter Repo by copying Git repo link from Github.
 Choose BigQuery as the data warehouse.
 
 * Upload the service account key json file in the create from file option. This will fill out most fields related to the production credentials.
