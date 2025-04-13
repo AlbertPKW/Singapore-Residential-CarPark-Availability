@@ -191,7 +191,7 @@ The same GCS bucket will be populated with parquet files of carpark availability
 
 In addition, the subflow ```05_gcp_dbt``` will generate numerous Staging/Dimension tables and Fact Table in BigQuery.
 
-![dim_fact](https://github.com/AlbertPKW/Singapore-Residential-CarPark-Availability/blob/main/images/dimensions_fact.jpg)
+![dim_fact](https://github.com/AlbertPKW/Singapore-Residential-CarPark-Availability/blob/main/images/dimensions_fact_2.jpg)
 
 ### Data Reporting with Data Studio
 
