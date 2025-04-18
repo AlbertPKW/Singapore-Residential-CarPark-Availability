@@ -16,7 +16,7 @@ Singapore, as a densely populated urban city-state, faces significant challenges
 This project empowers Singapore residents with data-driven insights to reduce parking-related stress, save time, and optimize their daily commutes. 
 Additionally, it provides valuable information for urban planners and policy makers to better allocate resources and develop future infrastructure based on actual usage patterns.
 
-![Dashboard](https://github.com/AlbertPKW/Singapore-Residential-CarPark-Availability/blob/main/images/Singapore_Residential_Carpark_Analytics%20(2).jpg)
+![Dashboard](https://github.com/AlbertPKW/Singapore-Residential-CarPark-Availability/blob/main/images/Singapore_Residential_Carpark_Analytics%20(3).jpg)
 
 
 The project provides the following key features:
