@@ -102,7 +102,7 @@ tasks:
 
 ### Delete​Table
 
-```Delete​Table```
+```type: "io.kestra.plugin.gcp.bigquery.DeleteTable"```
 
 Delete a BigQuery table or a BigQuery partition
 
@@ -160,3 +160,6 @@ The purpose of this expression is to locate the specific JSON file named "master
 * [​Kestra Plugin: Load​From​Gcs](https://kestra.io/plugins/plugin-graalvm/bigquery/io.kestra.plugin.gcp.bigquery.loadfromgcs)
 * [​Kestra Plugin: Download](https://kestra.io/plugins/core/http/io.kestra.plugin.core.http.download)
 * [​Kestra Plugin: Archive​Decompress](https://kestra.io/plugins/plugin-compress/io.kestra.plugin.compress.archivedecompress)
+* [​Kestra Plugin: Python Script](https://kestra.io/plugins/tasks/io.kestra.plugin.scripts.python.script)
+* [​Kestra Plugin: Delete​Table](https://kestra.io/plugins/plugin-graalvm/bigquery/io.kestra.plugin.gcp.bigquery.deletetable)
+* [​Kestra Plugin: Subflow](https://kestra.io/plugins/core/flow/io.kestra.plugin.core.flow.subflow)
