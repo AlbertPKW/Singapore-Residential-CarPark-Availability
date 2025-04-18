@@ -39,6 +39,7 @@ tasks:
 * **createDisposition**: This paramenter defines whether the job is allowed to create tables. ```CREATE_IF_NEEDED``` create table if it does not exist and pass through when table exist, while ```CREATE_NEVER``` will not create table in any circumstance.
 * **writeDisposition**: Determines how to handle existing tables when writing query results. ```WRITE_TRUNCATE``` replaces all existing rows, while ```WRITE_APPEND``` adds results to the current table data.
 
+
 ### ​Download
 
 ```type: "io.kestra.plugin.core.http.Download"```
@@ -51,6 +52,7 @@ tasks:
     type: io.kestra.plugin.core.http.Download
     uri: https://gist.github.com/samuelyeewl/246258d00910390b0859f864645c00c8/archive/ab82ef3ac41da254ae1cbea4ecf77352d9ad3018.zip
 ```
+
 
 ### ​Archive​Decompress
 
@@ -65,6 +67,7 @@ tasks:
     algorithm: ZIP
     from: "{{ outputs.get_zipfile.uri }}"
 ```
+
 
 ### Python Script
 
@@ -95,6 +98,44 @@ tasks:
 
 * **beforeCommands**: A list of commands that will run before the commands, allowing to set up the environment e.g. pip install -r requirements.txt.
 * **containerImage**: The task runner container image, only used if the task runner is container-based.
+
+
+### Delete​Table
+
+```Delete​Table```
+
+Delete a BigQuery table or a BigQuery partition
+
+```
+tasks:
+  - id: delete_ext_table
+    type: io.kestra.plugin.gcp.bigquery.DeleteTable
+    projectId: "{{kv('GCP_PROJECT_ID')}}"
+    dataset: "{{kv('GCP_DATASET')}}"
+    table: "{{render(vars.del_table)}}_ext"
+```
+
+
+### Subflow
+
+```type: "io.kestra.plugin.core.flow.Subflow"```
+
+Subflows provide a modular approach to reusing workflow logic, allowing one flow to invoke another flow similarly to how functions are called in programming languages. When a parent flow is restarted, any subflows that were previously executed will also be restarted.
+
+```
+tasks:
+  - id: call_subflow
+    type: io.kestra.plugin.core.flow.Subflow
+    description: This task triggers the flow `05_gcp_dbt` without inputs.
+    namespace: "{{ flow.namespace}}"
+    flowId: 05_gcp_dbt
+    wait: true
+    transmitFailed: true
+```
+
+* **wait**: Whether to wait for the subflow execution to finish before continuing the current execution.
+* **transmitFailed**: Whether to fail the current execution if the subflow execution fails or is killed. Note that this option works only if wait is set to true.
+
 
 ## JQ
 
