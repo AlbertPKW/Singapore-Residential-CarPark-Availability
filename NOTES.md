@@ -66,6 +66,56 @@ tasks:
     from: "{{ outputs.get_zipfile.uri }}"
 ```
 
+### Python Script
+
+```type: "io.kestra.plugin.scripts.python.script"```
+
+Execute a Python script.
+
+```
+tasks:
+  - id: process_json
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: ghcr.io/kestra-io/pydata:latest
+    env:
+      CREDENTIALS__PROJECT_ID: "{{kv('GCP_PROJECT_ID')}}"
+      CREDENTIALS__PRIVATE_KEY: "{{kv('GCP_CREDS')['private_key']}}"
+    outputFiles:
+      - "*.json"
+    script: |
+    
+      import json
+
+      with open("{{render(vars.data)}}") as f:
+          data = json.load(f)
+      with open("{{vars.features_file}}", "w") as out:
+          for feature in data['features']:
+              out.write(json.dumps(feature) + '\n')
+```
+
+* **beforeCommands**: A list of commands that will run before the commands, allowing to set up the environment e.g. pip install -r requirements.txt.
+* **containerImage**: The task runner container image, only used if the task runner is container-based.
+
+## JQ
+
+JQ is a lightweight command-line utility designed specifically for processing JSON data. 
+
+```data: "{{ outputs.unzip.files | jq('.[] | select(. | endswith(\"master_plan_boundaries.json\")) | .') | first }}"```
+
+The purpose of this expression is to locate the specific JSON file named "master_plan_boundaries.json" from all the files that were extracted from the zip archive, without needing to know its exact path within the archive structure. This value is then stored in the ```data``` variable, which is used later in the workflow, specifically in the Python script that processes the JSON data.
+
+1. ```outputs.unzip.files``` - This references the list of files that were extracted by the "unzip" task. After decompression, Kestra makes the list of files available through this variable.
+
+2. ```| jq('.[] | select(. | endswith(\"master_plan_boundaries.json\")) | .')``` - This applies a jq filter to process the file list:
+    * ```.[]``` - Iterates through each item in the array of files
+    * ```select(. | endswith(\"master_plan_boundaries.json\"))``` - Filters to only include files that end with "master_plan_boundaries.json"
+    * The final ```.``` in the jq expression outputs the matching file paths
+
+3. ```| first``` - Takes only the first matching file from the results (in case there are multiple matches)
+
+
 ## Sources
 * [Kestra blog: Robust data pipelines for BigQuery and Google Cloud](https://kestra.io/blogs/2022-11-19-create-data-pipeline-bigquery-google-cloud)
 * [​Kestra Plugin: Load​From​Gcs](https://kestra.io/plugins/plugin-graalvm/bigquery/io.kestra.plugin.gcp.bigquery.loadfromgcs)
+* [​Kestra Plugin: Download](https://kestra.io/plugins/core/http/io.kestra.plugin.core.http.download)
+* [​Kestra Plugin: Archive​Decompress](https://kestra.io/plugins/plugin-compress/io.kestra.plugin.compress.archivedecompress)
