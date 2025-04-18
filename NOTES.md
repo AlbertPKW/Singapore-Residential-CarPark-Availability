@@ -174,9 +174,13 @@ packages:
 
 ## BigQuery for geospatial analytics
 
+[ST_GEOGPOINT](https://cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_geogpoint) creates a GEOGRAPHY point using specified longitude and latitude in degrees
+
 ```ST_GEOGPOINT(longitude, latitude)```
 
-[ST_GEOGPOINT](https://cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_geogpoint) creates a GEOGRAPHY point using specified longitude and latitude in degrees
+z.geometry are polygons for subzones in Singapore. c.geometry are centroids of carparks in Singapore.
+
+[ST_CONTAINS](https://cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_contains) Returns TRUE if all points of carparks(c.geometry) are within subzones(z.geometry) and their interiors overlap; otherwise, returns FALSE.
 
 ```
 SELECT *
@@ -187,9 +191,6 @@ INNER JOIN subzones_dim as z
     ON (ST_CONTAINS(z.geometry,c.geometry))
 ```
 
-Note: z.geometry are polygons for subzones in Singapore. c.geometry are centroids of carparks in Singapore.
-
-[ST_CONTAINS](https://cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions#st_contains) Returns TRUE if all points of carparks(c.geometry) are within subzones(z.geometry) and their interiors overlap; otherwise, returns FALSE.
 
 ## Sources
 * [Kestra blog: Robust data pipelines for BigQuery and Google Cloud](https://kestra.io/blogs/2022-11-19-create-data-pipeline-bigquery-google-cloud)
