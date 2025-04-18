@@ -200,3 +200,7 @@ In addition, the subflow ```05_gcp_dbt``` will generate numerous Staging/Dimensi
 ### Data Reporting with Data Studio
 
 Open the [dashboard](https://lookerstudio.google.com/reporting/d7937c79-de8d-4694-875b-e800abc4b159/page/5tLFF) for insights.
+
+### Learning in Public
+
+[Notes for topics learnt during project](https://github.com/AlbertPKW/Singapore-Residential-CarPark-Availability/blob/main/README.md)
