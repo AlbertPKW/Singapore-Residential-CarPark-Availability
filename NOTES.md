@@ -155,6 +155,23 @@ The purpose of this expression is to locate the specific JSON file named "master
 3. ```| first``` - Takes only the first matching file from the results (in case there are multiple matches)
 
 
+## dbt
+
+### dbt-date
+
+```packages.yml```
+```
+packages:
+  - package: godatadriven/dbt_date
+    version: 0.11.0
+```
+
+```dbt-date``` is an extension package for dbt to handle common date logic and calendar functionality.
+
+```dates.sql```
+```{{ dbt_date.get_date_dimension("2023-01-01", "2025-12-31") }}```
+
+
 ## Sources
 * [Kestra blog: Robust data pipelines for BigQuery and Google Cloud](https://kestra.io/blogs/2022-11-19-create-data-pipeline-bigquery-google-cloud)
 * [​Kestra Plugin: Load​From​Gcs](https://kestra.io/plugins/plugin-graalvm/bigquery/io.kestra.plugin.gcp.bigquery.loadfromgcs)
@@ -163,3 +180,5 @@ The purpose of this expression is to locate the specific JSON file named "master
 * [​Kestra Plugin: Python Script](https://kestra.io/plugins/tasks/io.kestra.plugin.scripts.python.script)
 * [​Kestra Plugin: Delete​Table](https://kestra.io/plugins/plugin-graalvm/bigquery/io.kestra.plugin.gcp.bigquery.deletetable)
 * [​Kestra Plugin: Subflow](https://kestra.io/plugins/core/flow/io.kestra.plugin.core.flow.subflow)
+* [dbt-date](https://hub.getdbt.com/godatadriven/dbt_date/latest/)
+* [Using GeoJSON in BigQuery for geospatial analytics](https://cloud.google.com/blog/topics/developers-practitioners/using-geojson-bigquery-geospatial-analytics)
