@@ -98,7 +98,7 @@ Make sure Docker Desktop is opened before running the following commands
 ```
 cd data_ingest
 docker compose build
-docker compose up
+docker compose up -d
 ```
 
 Go to Kestra UI at the web address ```localhost:9080``` and import the workflows from ```data_ingest\kestra_workflows```
