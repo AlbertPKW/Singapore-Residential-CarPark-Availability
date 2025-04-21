@@ -97,6 +97,7 @@ Make sure Docker Desktop is opened before running the following commands
 
 ```
 cd data_ingest
+docker compose build
 docker compose up
 ```
 
