@@ -204,4 +204,4 @@ Open the [dashboard](https://lookerstudio.google.com/reporting/d7937c79-de8d-469
 
 ### Learning in Public
 
-[Notes for topics learnt during project](https://github.com/AlbertPKW/Singapore-Residential-CarPark-Availability/blob/main/README.md)
+[Notes for topics learnt during project]([https://github.com/AlbertPKW/Singapore-Residential-CarPark-Availability/blob/main/NOTES.md])
